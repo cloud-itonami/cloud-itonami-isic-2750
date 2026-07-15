@@ -1,0 +1,39 @@
+{:itonami.blueprint/id "cloud-itonami-isic-2750"
+ :itonami.blueprint/name "Manufacture of domestic appliances"
+ :itonami.blueprint/isic-rev5 "2750"
+ :itonami.blueprint/domain :domestic-appliances/manufacturing
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:worker-safety :product-safety :consumer-electrical-safety]
+ :itonami.blueprint/governor :domestic-appliance-plant-operations-governor
+ :itonami.blueprint/robotics true
+ :itonami.blueprint/required-technologies [:robotics :identity :forms :dmn :bpmn :audit-ledger :eda :cae]
+ :itonami.blueprint/optional-technologies []
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/maturity :implemented
+ :itonami.blueprint/implemented-slice
+ "DomApplAdvisor ⊣ Domestic Appliance Plant Operations Governor,
+ langgraph-clj StateGraph, append-only audit ledger. A plant OPERATIONS
+ COORDINATION actor for domestic-appliance manufacturing (compressor/
+ motor/wiring assembly and final-assembly and test lines producing
+ finished refrigerators, washing machines, dishwashers, microwave
+ ovens, and small kitchen appliances) -- not direct assembly/test-
+ bench-equipment control authority and not domestic-appliance-safety-
+ certification authority (e.g. UL/CE/CSA compliance mark). Four ops
+ (`:log-production-batch` / `:schedule-maintenance` /
+ `:flag-safety-concern` / `:coordinate-shipment`), all `:effect
+ :propose` only. Twelve concrete governor checks elaborate this
+ blueprint's four HARD invariants: propose-only effect, closed op
+ allowlist, closed proposal-effect allowlist (no direct assembly/test-
+ bench-equipment control), permanent equipment-actuate block, permanent
+ safety-certification-authority block (this actor never self-issues a
+ domestic-appliance safety compliance mark), independent equipment
+ verification/registration before maintenance scheduling, independent
+ batch verification/registration before shipment coordination,
+ independent shipment-quantity recompute against the batch's own
+ logged production quantity, double-schedule guard, product-type
+ validation, dielectric (hipot/withstand) safety-test-voltage
+ plausibility validation, and defect-rate plausibility validation.
+ Safety-concern flagging (electrical-safety/refrigerant-leak/UL-CE-
+ compliance concern) ALWAYS escalates to a human plant supervisor;
+ `:log-production-batch` is the only op eligible to auto-commit, and
+ only at phase 3 when governor-clean."}
