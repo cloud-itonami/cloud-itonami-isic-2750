@@ -2,7 +2,9 @@
   "The phase table as executable tests. The invariant this repo cannot
   regress on: `:schedule-maintenance` must NEVER be a member of any
   phase's `:auto` set."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.set :as set]
+            [clojure.test :refer [deftest is testing]]
+            [domappl.governor :as governor]
             [domappl.phase :as phase]))
 
 (deftest schedule-maintenance-never-auto-at-any-phase
@@ -55,3 +57,23 @@
 
 (deftest verdict->disposition-maps-commit
   (is (= :commit (phase/verdict->disposition {:hard? false :escalate? false}))))
+
+;; ---------------------------------------------------------------------------
+;; The op allowlist as the fleet reads it.
+;;
+;; `domappl.phase` is where a caller outside this repo looks for "what may
+;; this actor be asked to do" -- the 営み OS adapter binds
+;; `(into read-ops write-ops)` by reference rather than copying it, so a
+;; divergence between this table and `domappl.governor/allowed-ops` would
+;; make the OS advertise an op the governor refuses (or hide one it accepts)
+;; without anything failing.
+
+(deftest read-ops-is-empty-and-says-so
+  (testing "every op in this domain drafts a mutation; there is no pure read"
+    (is (= #{} phase/read-ops))))
+
+(deftest published-op-allowlist-matches-the-governors-own
+  (is (= governor/allowed-ops (into phase/read-ops phase/write-ops))))
+
+(deftest read-and-write-ops-do-not-overlap
+  (is (empty? (set/intersection phase/read-ops phase/write-ops))))

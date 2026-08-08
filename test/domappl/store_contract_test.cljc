@@ -100,3 +100,37 @@
   (let [s (store/mem-store)]
     (store/append-ledger! s {:t :x})
     (is (= (store/ledger s) (store/get-ledger s)))))
+
+;; ---------------------------------------------------------------------------
+;; `seed-db` -- the arity-0 entry point the rest of the fleet calls.
+
+(deftest seed-db-is-the-sample-data-store
+  (testing "the demo store the 営み OS adapter starts from carries the sample set"
+    (let [s (store/seed-db)]
+      (is (= ["batch-001" "batch-002" "batch-003"] (mapv :id (store/all-batches s))))
+      (is (= ["assy-001" "final-test-002"] (mapv :id (store/all-equipment s))))
+      (is (= [] (store/ledger s))))))
+
+(deftest seed-db-is-fresh-each-call
+  (testing "two callers must not share a store -- a commit in one is invisible to the other"
+    (let [a (store/seed-db)
+          b (store/seed-db)]
+      (store/commit-record! a {:effect :batch/upsert :path ["batch-001"]
+                               :value {:product-type :washing-machine}})
+      (is (= :washing-machine (:product-type (store/batch a "batch-001"))))
+      (is (= :refrigerator (:product-type (store/batch b "batch-001")))))))
+
+(deftest seed-db-keeps-the-three-structurally-different-cases
+  (testing "the demo set is what makes the governor's holds demonstrable, so it is part of the contract"
+    (let [s (store/seed-db)]
+      ;; verified + registered, with shipping headroom -> a shipment can commit
+      (is (true? (:verified? (store/batch s "batch-001"))))
+      (is (< (:shipped-units (store/batch s "batch-001"))
+             (:quantity-units (store/batch s "batch-001"))))
+      ;; verified + registered but nearly fully shipped -> quantity check bites
+      (is (true? (:verified? (store/batch s "batch-002"))))
+      ;; unverified -> the verified/registered check bites
+      (is (false? (:verified? (store/batch s "batch-003"))))
+      ;; one schedulable equipment unit and one that is not
+      (is (true? (:verified? (store/equipment-unit s "assy-001"))))
+      (is (false? (:verified? (store/equipment-unit s "final-test-002")))))))

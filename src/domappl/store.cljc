@@ -229,6 +229,20 @@
   (with-equipment s (sample-equipment))
   s)
 
+(defn seed-db
+  "A MemStore already carrying `sample-data!` -- the deterministic
+  default the demo, the tests and the 営み OS adapter all start from.
+
+  `mem-store` (empty) and `sample-data!` (seed it) were both already
+  here; what was missing was the one name the rest of the fleet calls.
+  Every sibling `cloud-itonami-isic-*` actor exposes exactly this
+  arity-0 entry point, which is what lets the OS adapter stay a
+  three-line shim with no judgement in it -- had this been absent the
+  OS would have had to know how this particular store is assembled,
+  and that knowledge would then live in two places."
+  []
+  (doto (mem-store) sample-data!))
+
 ;; ----------------------------- back-compat aliases -----------------------------
 ;; `get-ledger` mirrors `ledger` under the name several sibling actors'
 ;; own demo/test harnesses already call.
