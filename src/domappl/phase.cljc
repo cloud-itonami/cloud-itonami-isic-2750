@@ -31,6 +31,21 @@
   (`:log-production-batch`) -- no separate no-risk lifecycle distinct
   from ordinary record logging.")
 
+(def read-ops
+  "Ops this actor publishes that never write the SSoT. **Empty, and that
+  is the finding rather than a placeholder** -- all four of this
+  actor's ops draft something that would mutate the plant's own record
+  (a batch upsert, a maintenance-window draft, a safety-concern entry,
+  a shipment draft). There is no `:coverage/report`-style pure read in
+  this domain.
+
+  The name exists because it is where a caller looks for this actor's
+  own op allowlist: the 営み OS adapter reads `(into read-ops
+  write-ops)` rather than keeping its own copy, so an actor with no
+  read ops has to say so out loud instead of leaving the caller to
+  guess whether the set is empty or merely unwritten."
+  #{})
+
 (def write-ops
   #{:log-production-batch :schedule-maintenance
     :flag-safety-concern :coordinate-shipment})
