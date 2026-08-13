@@ -21,6 +21,24 @@
          {:local/root "../../kotoba-lang/langchain"}}}
   ;; clojure -M:dev:run  -> drive the demo through one OperationActor
   :run {:main-opts ["-m" "domappl.sim"]}
+  ;; clojure -M:dev:render-html [out-file]
+  ;;   -> regenerate docs/samples/operator-console.html by running the
+  ;;      REAL actor (operation -> governor -> store) and rendering the
+  ;;      store + audit channel it produced. Refuses to write the file
+  ;;      unless every HARD invariant in domappl.governor actually fired
+  ;;      (see domappl.render-html/assert-hard-holds!).
+  ;;
+  ;;      jp-go-dds (the workspace's base design system, CLAUDE.md
+  ;;      "UI/UX 標準") is scoped to THIS alias rather than top-level
+  ;;      :deps on purpose: the console is the only consumer, and the
+  ;;      top-level comment above promises that a bare `clojure -M:test`
+  ;;      resolves offline from :local/root alone. A git coordinate in
+  ;;      :deps would break that promise for every test run.
+  :render-html {:extra-deps
+                {io.github.kotoba-lang/jp-go-digital-design-system
+                 {:git/url "https://github.com/kotoba-lang/jp-go-digital-design-system"
+                  :git/sha "83db99546eabc53613ae826ea41d1533a3c574af"}}
+                :main-opts ["-m" "domappl.render-html"]}
   :test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
                       {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
