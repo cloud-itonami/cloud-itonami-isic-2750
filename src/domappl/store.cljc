@@ -152,7 +152,7 @@
   (maintenance-already-scheduled? [_ maintenance-id]
     (boolean (get-in @a [:maintenance maintenance-id :scheduled?])))
   (get-records [_] (:records @a))
-  (commit-record! [s {:keys [effect path value] :as record}]
+  (commit-record! [s {:keys [effect path value payload] :as record}]
     (cond
       (= effect :batch/upsert)
       (swap! a update-in [:batches (first path)] merge (assoc value :id (first path)))
@@ -164,7 +164,7 @@
         (swap! a (fn [state]
                    (-> state
                        (update :maintenance-sequence (fnil inc 0))
-                       (update-in [:maintenance maintenance-id] merge (assoc value :id maintenance-id) patch)
+                       (update-in [:maintenance maintenance-id] merge (assoc (or payload value) :id maintenance-id) patch)
                        (update :maintenance-history registry/append result)
                        (update-in [:equipment equipment-id :last-scheduled-maintenance-date]
                                   (fn [_prev] (:scheduled-date value))))))
