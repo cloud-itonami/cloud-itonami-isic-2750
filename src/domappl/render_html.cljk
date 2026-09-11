@@ -24,7 +24,7 @@
   consecutive runs are byte-identical. Verify by rendering twice into
   two scratch files and diffing.
 
-  Usage: `clojure -M:dev:render-html [out-file]`
+  Usage: `kbb -M:dev:render-html [out-file]`
   (default `docs/samples/operator-console.html`)."
   (:require [jp-go-dds.skin]
             [kotoba.lang.text :as str]
@@ -547,7 +547,7 @@
      "</header>\n"
      "<main>\n"
      "  <section class=\"card\">\n"
-     "    <p>このページは手書きではない。<code>clojure -M:dev:render-html</code> が "
+     "    <p>このページは手書きではない。<code>kbb -M:dev:render-html</code> が "
      "<code>domappl.operation</code>(langgraph-clj StateGraph) → <code>domappl.governor</code> → "
      "<code>domappl.store</code> の実パイプラインを走らせ、その結果のストアと監査チャネルを"
      "そのまま描画したもの。エンティティは全て <code>domappl.store</code> の seed 由来で、"

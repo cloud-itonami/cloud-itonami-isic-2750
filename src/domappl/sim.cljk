@@ -1,5 +1,5 @@
 (ns domappl.sim
-  "Demo driver -- `clojure -M:dev:run`. Walks a clean plant through
+  "Demo driver -- `kbb -M:dev:run`. Walks a clean plant through
   intake -> maintenance scheduling (escalate/approve) -> safety-concern
   flag (escalate/approve) -> shipment coordination (escalate/approve),
   then shows HARD-hold scenarios: a mis-wired request whose own
