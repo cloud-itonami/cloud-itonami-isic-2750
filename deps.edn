@@ -5,7 +5,7 @@
  ;; standalone (forkable outside the workspace); the :local/root paths
  ;; only resolve inside the monorepo checkout -- a standalone fork
  ;; should override them with git coordinates. langchain is pinned here
- ;; directly (not only under :dev) so a bare `clojure -M:test` works
+ ;; directly (not only under :dev) so a bare `kbb -M:test` works
  ;; offline inside the monorepo checkout without depending on
  ;; langgraph's own transitive git/sha pin being fetchable.
  :deps {
@@ -24,9 +24,9 @@
   :dev {:override-deps
         {io.github.kotoba-lang/langchain
          {:local/root "../../kotoba-lang/langchain"}}}
-  ;; clojure -M:dev:run  -> drive the demo through one OperationActor
+  ;; kbb -M:dev:run  -> drive the demo through one OperationActor
   :run {:main-opts ["-m" "domappl.sim"]}
-  ;; clojure -M:dev:render-html [out-file]
+  ;; kbb -M:dev:render-html [out-file]
   ;;   -> regenerate docs/samples/operator-console.html by running the
   ;;      REAL actor (operation -> governor -> store) and rendering the
   ;;      store + audit channel it produced. Refuses to write the file
@@ -36,7 +36,7 @@
   ;;      jp-go-dds (the workspace's base design system, CLAUDE.md
   ;;      "UI/UX 標準") is scoped to THIS alias rather than top-level
   ;;      :deps on purpose: the console is the only consumer, and the
-  ;;      top-level comment above promises that a bare `clojure -M:test`
+  ;;      top-level comment above promises that a bare `kbb -M:test`
   ;;      resolves offline from :local/root alone. A git coordinate in
   ;;      :deps would break that promise for every test run.
   :render-html {:extra-deps

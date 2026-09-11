@@ -199,10 +199,10 @@ telemetry, batch tracking, freight dispatch, certification-body APIs)
 
 ## Verification
 
-- `cloud-itonami-isic-2750`: `clojure -M:test` green (see the
+- `cloud-itonami-isic-2750`: `kbb -M:test` green (see the
   superproject ADR and `kotoba-lang/industry` registry entry for the
   exact raw output, verified from an independent fresh clone),
-  `clojure -M:lint` clean, `clojure -M:dev:run` demo narrative
+  `kbb -M:lint` clean, `kbb -M:dev:run` demo narrative
   exercises proposal submission, escalation, and every HARD-hold
   scenario directly (not-propose-effect, unknown-op, equipment-not-
   verified, batch-not-verified, shipment-quantity-exceeded, equipment-
@@ -217,4 +217,4 @@ telemetry, batch tracking, freight dispatch, certification-body APIs)
 - `deps.edn` pins `io.github.kotoba-lang/langgraph` and
   `io.github.kotoba-lang/langchain` via `:local/root` directly in the
   top-level `:deps` (not only under a `:dev` alias), so a bare
-  `clojure -M:test` resolves offline inside the monorepo checkout.
+  `kbb -M:test` resolves offline inside the monorepo checkout.
