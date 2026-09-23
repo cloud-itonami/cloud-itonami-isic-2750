@@ -40,7 +40,7 @@
   contract every caller of this actor agrees to) -- `domappl.governor`
   HARD-holds any request that doesn't, so a mis-wired caller can never
   reach a commit path even if this advisor were compromised."
-  (:require #?(:clj  [clojure.edn :as edn]
+  (:require #?(:clj  [kotoba.lang.edn :as edn]
                :cljs [cljs.reader :as edn])
             [kotoba.lang.text :as str]
             [domappl.registry :as registry]
