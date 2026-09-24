@@ -3,7 +3,7 @@
   regress on: `:schedule-maintenance` must NEVER be a member of any
   phase's `:auto` set."
   (:require [kotoba.lang.coll :as set]
-            [clojure.test :refer [deftest is testing]]
+            [kotoba.test :refer [deftest is testing]]
             [domappl.governor :as governor]
             [domappl.phase :as phase]))
 
