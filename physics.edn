@@ -1,0 +1,34 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README: the ISIC 2750 plant assembles refrigerators, washing machines,
+;; dishwashers, ovens and small kitchen appliances and runs functional and
+;; safety tests. The robots' physical work: the oven's heating test (does the
+;; door's outer skin stay touchable during a one-hour bake), and moving a
+;; finished refrigerator from the end of line to the packing station.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-2750"
+ :cases
+ [{:id :oven-door-heating-test
+   :kind :thermal
+   :procedure "one-hour 250 C bake in the heating test: the glass-wool layer of the oven door between the cavity and the outer skin, outer skin cooled by room air at 25 C"
+   :params {:conductivity-w-mk 0.04 :density-kg-m3 50.0 :specific-heat-j-kgk 840.0
+            :t0-c 25.0 :t-hot-c 250.0 :h-front-w-m2k 20.0 :t-back-ambient-c 25.0 :h-back-w-m2k 10.0
+            :threshold-c 60.0 :duration-s 3600.0 :nodes 5}
+   :sweep {:param :thickness-m :values [0.008 0.012 0.016 0.024 0.032]}
+   :quantity :peak-back-c
+   :limit {:max 60.0 :basis "estimate: touch temperature for a door outer skin; the cavity-side h (convection + radiation) and the glass-wool properties are estimates, the product's IEC 60335-2-6 temperature-rise limits are not yet sourced here"}
+   :boundary {:lo 0.004 :hi 0.05}}
+  {:id :fridge-to-packing
+   :kind :transport
+   :procedure "AMR carries a finished refrigerator upright from the end-of-line test to the packing station (35 m); the tall load's centre of gravity sits high"
+   :params {:mass-kg 80.0 :distance-m 35.0 :v-max-mps 1.0 :a-max-mps2 0.5
+            :brake-decel-mps2 2.5 :drive-force-n 400.0 :crr 0.015
+            :cog-height-m 0.25 :support-half-length-m 0.30 :payload-cog-height-m 0.95
+            :max-time-s 600.0}
+   :sweep {:param :payload-kg :values [40.0 60.0 80.0 100.0 130.0]}
+   :quantity :min-tipover-margin
+   :limit {:min 0.5 :basis "estimate: keep half the restoring moment in reserve at the AMR's 2.5 m/s2 emergency stop (the stop deceleration is also an estimate)"}
+   :boundary {:lo 10.0 :hi 300.0}}]}
