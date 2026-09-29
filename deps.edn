@@ -57,7 +57,7 @@
   ;;      unless every HARD invariant in domappl.governor actually fired
   ;;      (see domappl.render-html/assert-hard-holds!).
   ;;
-  ;;      jp-go-dds (the workspace's base design system, CLAUDE.md
+  ;;      jp-go-dds (the workspace's base design system, AGENTS.md
   ;;      "UI/UX 標準") is scoped to THIS alias rather than top-level
   ;;      :deps on purpose: the console is the only consumer, and the
   ;;      top-level comment above promises that a bare `kbb -M:test`
